@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="login/base::layout(~{::section})"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Cart</title>
+  </head>
+
+  <section style="margin: 0; padding: 4rem; background-color: #eee">
+    <body onload="sumThePrices()">
+      <style>
+        .showBox {
+          display: block;
+        }
+
+        .hideBox {
+          display: none;
+        }
+      </style>
+
+      <div class="container">
+        <div class="row">
+          <div
+            class="col-md-12"
+            style="background-color: white; border-radius: 5px"
+          >
+            <h1 class="text-center p-3">Shoping Cart</h1>
+
+            <div
+              class="container text-center my-5"
+              th:classappend="${cart_products.size()} > 0 ? 'hideBox' : 'n'"
+            >
+              <img src="/images/empty-cart.png" height="100px" width="100px" />
+              <h3 class="mt-3">Your Cart is Empty!</h3>
+              <p>Explore our wide selection and find something you like</p>
+            </div>
+
+            <div class="table-responsive">
+              <table
+                class="table p-4 table-hover cart-table"
+                th:classappend="${cart_products.size()} > 0 ? ' n ' : 'hideBox'"
+              >
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody id="cart-body" th:each="c : ${cart_products}">
+                  <tr style="padding: 5rem" class="cart-product">
+                    <th scope="row">
+                      <img
+                        th:src="@{/images/remove.png}"
+                        height="20px"
+                        width="20px"
+                        style="margin-top: 1.5rem"
+                        th:attr="onclick='removeProduct(' + ${c.getId()} + ')'"
+                      />
+                    </th>
+
+                    <td>
+                      <img
+                        th:src="${c.getImg_url}"
+                        height="50px"
+                        width="50px"
+                      />
+                    </td>
+                    <td><h3 class="py-3" th:text="${c.getName}"></h3></td>
+                    <td>
+                      <h3 class="py-3" th:text="${c.getPrice} + 'Rs'"></h3>
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        class="py-3"
+                        value="1"
+                        min="1"
+                        max="10"
+                        style="font-size: large"
+                        th:attr="onchange='updateSubtotal(\'' + ${c.getId()} + '\',\''+ ${c.getPrice()} + '\')', id='pq-' + ${c.getId()}"
+                      />
+                    </td>
+                    <td>
+                      <h3
+                        class="py-3 p-subtotal"
+                        th:text="${c.getPrice} +' Rs'"
+                        th:attr="id='pst-'+${c.getId()}"
+                      ></h3>
+                    </td>
+                    <!-- pst = product subtotal -->
+                    <!-- pq = product quantity -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            class="col-md-12"
+            style="
+              background-color: white;
+              border-radius: 5px;
+              margin-top: 3rem;
+              padding-bottom: 2rem;
+              padding-top: 2rem;
+            "
+          >
+            <!-- <h1 class="my-3 text-center">Cart Total</h1> -->
+
+            <!-- <hr />
+            <div class="text-right">
+              <p> Subtotal : &nbsp; &nbsp; <span> 550 </span>Rs </p>
+              
+            </div>
+
+            <hr />
+            <div class="text-right">
+              <p> tax : &nbsp; &nbsp; &nbsp; <span> 10 </span>Rs </p>
+            </div>
+            <hr />
+            <div class="text-right">
+              <h3> Total : &nbsp; <span> 550 </span>Rs </h3>
+            </div>
+            <hr /> -->
+
+            <div style="display: flex; flex-direction: row-reverse">
+              <table>
+                <tbody>
+                  <tr>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td><h5>Subtotal</h5></td>
+                    <td class="text-right">
+                      <strong>
+                        <h5
+                          id="t_subtotal"
+                          th:text="${cart_products_sum}+ ' Rs'"
+                        ></h5>
+                      </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td><h5>Estimated shipping</h5></td>
+                    <td class="text-right">
+                      <h5><strong>60 Rs</strong></h5>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td><h3>Total</h3></td>
+                    <td class="text-right">
+                      <strong>
+                        <h3
+                          id="t_total"
+                          th:text="${cart_products_sum} + 60+' Rs'"
+                        ></h3>
+                      </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td>
+                      <a
+                        type="button"
+                        class="btn btn-default"
+                        th:href="@{/loggedIn/products}"
+                      >
+                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                        Continue Shopping
+                      </a>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="moveToCheckout()"
+                      >
+                        Order Now <span class="glyphicon glyphicon-play"></span>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- box below total price -->
+
+        <div class="row">
+          <div class="col-md-3"></div>
+
+          <div class="col-md-3"></div>
+
+          <div class="col-md-3"></div>
+        </div>
+      </div>
+
+      <script>
+        function moveToCheckout() {
+          let total = document
+            .getElementById("t_total")
+            .innerText.split(" ")[0];
+          let subtotal = document
+            .getElementById("t_subtotal")
+            .innerText.split(" ")[0];
+
+          if (subtotal == "0") {
+            swal(
+              "Cart is Empty",
+              "please add product to the cart first",
+              "warning"
+            );
+            return;
+          }
+
+          console.log(total);
+
+          window.location.replace("/loggedIn/ordernow/" + total);
+        }
+
+        function updateSubtotal(id, price) {
+          // console.log("pst-" + id);
+          quantity = document.getElementById("pq-" + id).value;
+          // console.log(value);
+          document.getElementById("pst-" + id).innerHTML =
+            quantity * price + " Rs";
+
+        
+        
+            // now also update in the my_cart database
+
+          let url = `http://localhost:8282/updateInCart/${id}/${quantity}`;
+
+          fetch(url)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              // document.querySelector(".cart-table").show()
+            });
+
+
+
+
+
+
+
+          sumThePrices();
+        }
+
+        function sumThePrices() {
+          let h3Tags = document.querySelectorAll(".p-subtotal");
+
+          let sum = 0;
+          h3Tags.forEach(function (h3) {
+            sum += parseFloat(h3.textContent);
+          });
+
+          console.log(sum);
+
+          document.getElementById("t_subtotal").innerText = sum + " Rs";
+
+          if (sum != 0) {
+            document.getElementById("t_total").innerText = sum + 60 + " Rs";
+          } else {
+            document.getElementById("t_total").innerText = 0 + " Rs";
+          }
+        }
+
+        function removeProduct(id) {
+          window.location.replace("/loggedIn/removeProduct/" + id);
+        }
+      </script>
+    </body>
+  </section>
+</html>

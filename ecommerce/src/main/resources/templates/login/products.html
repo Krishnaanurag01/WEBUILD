@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/login/base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+
+    <style>
+
+        .red{
+          background-color:red ;
+        }
+    </style>
+
+
+</head>
+
+
+
+
+<section style="padding: 5rem 0%" onload="getProducts('allProducts')">
+
+    <body onload="getProducts('allProducts')">
+   <div class="container-fluid" >
+       <div class="row">
+           <div class="col-md-3" style="margin-bottom: 3rem;">
+               <div class="table-responsive">
+               <table class="table table-hover">
+                   <thead class="thead-dark" style="background-color:yellow;">
+                   <tr> <th scope="col">Categories</th> </tr>
+                   </thead>
+                   <tbody>
+                    <tr onclick="getProducts('allProducts')"> <td>All Products</td> </tr>
+                    <tr onclick="getProducts('interiorDesign')"> <td>Interior Design Products</td> </tr>
+                    <tr onclick="getProducts('constructionMaterial')"> <td>Contsruction Material</td> </tr>
+                    <tr onclick="getProducts('hardwares')"> <td>Hardwares</td> </tr>
+                    <tr onclick="getProducts('homeDecor')"> <td>Home Decor</td> </tr>
+                   </tbody>
+
+               </table>
+           </div>
+           </div>
+
+           <div class="col-md-9">
+
+            <div class="row" id="products_dashboard" >
+
+
+
+
+
+
+                
+<!--            <div class="col-md-6">-->
+<!--               <a th:href="@{/loggedIn/productDetail/1}">-->
+<!--                -->
+<!--                   <div class="card">  &lt;!&ndash;width: 18rem;&ndash;&gt;-->
+<!--                       <img class="card-img-top" src="https://imgd.aeplcdn.com/664x374/n/cw/ec/141125/kwid-exterior-right-front-three-quarter.png?isig=0&q=75" alt="Card image cap">-->
+<!--                       <div class="card-body">-->
+<!--                           <h2 class="card-title black-font">Renault Kwid</h2>-->
+<!--                           <h5 class="font-black" >Price : 500000/- </h5>-->
+<!--                           <p class="card-text font-black">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum, fugit, rem? Architecto consequuntur ex, facilis ipsa repudiandae sunt ut voluptatibus! Architecto commodi culpa cum cumque dolore doloremque dolorum eaque, earum est ex expedita, in maiores molestias natus nemo nesciunt nihil obcaecati quaerat quis sit suscipit totam vel vitae. Autem consectetur culpa et excepturi neque sed sint voluptatibus? Ab adipisci commodi consectetur consequuntur culpa debitis distinctio dolorem eos esse excepturi, expedita impedit ipsa iste labore, laudantium maxime molestias nemo provident rerum vitae. Aspernatur dolores facere facilis magni modi nobis numquam quas tempora! Illum labore molestiae obcaecati optio sequi. Autem, itaque, quam.</p>-->
+<!--                           <a href="#" class="btn btn-primary">Add To CART</a>-->
+<!--                       </div>-->
+<!--                   </div>-->
+<!--               </a>-->
+<!--            </div>-->
+
+<!--            <div class="col-md-6 mt-1">-->
+<!--                <a th:href="@{/loggedIn/productDetail/1}">-->
+<!--                 -->
+<!--                    <div class="card">  &lt;!&ndash;width: 18rem;&ndash;&gt;-->
+<!--                        <img class="card-img-top" src="https://imgd.aeplcdn.com/664x374/n/cw/ec/141125/kwid-exterior-right-front-three-quarter.png?isig=0&q=75" alt="Card image cap" height="200px" >-->
+<!--                        <div class="card-body">-->
+<!--                            <h2 class="card-title black-font">Renault Kwid</h2>-->
+<!--                            <h5 class="font-black" >Price : 500000/- </h5>-->
+<!--                            <p class="card-text font-black">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum, fugit, rem? Architecto consequuntur ex, facilis ipsa repudiandae sunt ut voluptatibus! Architecto commodi culpa cum cumque dolore doloremque dolorum eaque, earum est ex expedita, in maiores molestias natus nemo nesciunt nihil obcaecati quaerat quis sit suscipit totam vel vitae. Autem consectetur culpa et excepturi neque sed sint voluptatibus? Ab adipisci commodi consectetur consequuntur culpa debitis distinctio dolorem eos esse excepturi, expedita impedit ipsa iste labore, laudantium maxime molestias nemo provident rerum vitae. Aspernatur dolores facere facilis magni modi nobis numquam quas tempora! Illum labore molestiae obcaecati optio sequi. Autem, itaque, quam.</p>-->
+<!--                            <a href="#" class="btn btn-primary">Add To CART</a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </a>-->
+<!--             </div>-->
+
+             </div>
+
+
+           </div>
+
+       </div>
+
+
+   </div>
+
+   <script>
+
+    function getProducts(Category) {
+        let url = `http://localhost:8282/getProducts/${Category}` ;
+        console.log("calling")
+		
+		fetch(url).then(response=>{
+			return response.json() ;
+		}).then(data=>{
+			console.log(data)
+			
+			let text = `` ;
+			
+			data.forEach((product)=>{
+
+                let detail = product.details.substring(0, Math.min(product.details.length, 300)) ;
+
+
+				text += `<div class="col-md-6 " style="margin-bottom: 3rem;">
+                <a th:href="@{/loggedIn/productDetail/${product.id}}">
+                   <div class="card" >  <!--width: 18rem;-->
+                       <img class="card-img-top" src="${product.img_url}" alt="Card image cap"  style="background-size: cover; background-repeat: no-repeat;background-position: center;" height="200px">
+                       <div class="card-body">
+                           <h2 class="card-title black-font">${product.name}</h2>
+                           <h5 class="font-black" >Price : ${product.price} </h5>
+                           <p class="card-text font-black" style="text-align: justify; text-justify: inter-word;" >${detail}...</p>
+                           <button onclick="addToCart('${product.id}')" class="btn btn-primary" style="color: white;">Add To CART</button>
+                       </div>
+                   </div>
+               </a>
+               </div>`
+			});
+			
+			
+			
+			$("#products_dashboard").html(text) ;
+			
+		})		
+    }
+
+    function addToCart(id) {
+        
+        let url = `http://localhost:8282/addInCart/${id}` ;
+       
+
+        fetch(url).then(response => {
+            return response.json()
+        }).then(data =>{
+            
+
+                // document.querySelector(".cart-table").show()
+        })
+    }
+
+
+   </script>
+
+
+    </body>
+</section>
+
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="login/base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+</head>
+<body>
+
+<section class="services" id="services">
+
+    <h1 class="heading"> our services </h1>
+
+    <div class="box-container">
+
+        <div class="box">
+            <img th:src="@{/images/service-1.png}" alt="">
+            <h3>Building construction</h3>
+            <p>Our team is committed to delivering quality construction, every time.</p>
+        </div>
+
+        <div class="box">
+            <img th:src="@{/images/service-2.png}" alt="">
+            <h3>House renovation</h3>
+            <p>Your home, but better – trust us to handle your renovation project.</p>
+        </div>
+
+        <div class="box">
+            <img th:src="@{/images/service-3.png}" alt="">
+            <h3>Architechture design</h3>
+            <p>Our team is committed to delivering exceptional design services, every time.</p>
+        </div>
+
+        <div class="box">
+            <img th:src="@{/images/service-4.png}" alt="">
+            <h3>Material supply</h3>
+            <p>We take pride in delivering materials that exceed your expectations.</p>
+        </div>
+
+        <div class="box">
+            <img th:src="@{/images/service-5.png}" alt="">
+            <h3>Construction consultant</h3>
+            <p>Our team of consultants will help you navigate the complexities of construction.</p>
+        </div>
+
+        <div class="box">
+            <img th:src="@{/images/service-6.png}" alt="">
+            <h3>Interior design</h3>
+            <p>Trust our team of experts to create a space that reflects your unique style.</p>
+        </div>
+
+        <div class="box">
+            <img th:src="@{'/images/service-7.png'}" alt="">
+            <h3>Building maintenance</h3>
+            <p>Your building, our priority – we keep it in top shape</p>
+        </div>
+
+        <div class="box">
+            <img th:src="@{/images/service-8.png}" alt="">
+            <h3>Building renovation</h3>
+            <p>Transforming buildings with innovative renovation solutions.</p>
+        </div>
+
+    </div>
+
+</section>
+</body>
+</html>

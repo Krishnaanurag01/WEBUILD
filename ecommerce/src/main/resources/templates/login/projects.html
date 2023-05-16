@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="login/base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+</head>
+<body>
+
+<section class="projects" id="projects">
+
+    <h1 class="heading"> our projects </h1>
+
+    <div class="box-container">
+
+        <a th:href="@{/images/project-1.jpg}" class="box">
+            <div class="image">
+                <img th:src="@{/images/project-1.jpg}" alt="">
+            </div>
+            <div class="content">
+                <div class="info">
+                    <h3>dream home</h3>
+                    <p>construction, design</p>
+                </div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+
+        <a th:href="@{/images/project-2.jpg}" class="box">
+            <div class="image">
+                <img th:src="@{/images/project-2.jpg}" alt="">
+            </div>
+            <div class="content">
+                <div class="info">
+                    <h3>Engineering the Land</h3>
+                    <p>construction, design</p>
+                </div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+
+        <a th:href="@{/images/project-3.jpg}" class="box">
+            <div class="image">
+                <img th:src="@{/images/project-3.jpg}" alt="">
+            </div>
+            <div class="content">
+                <div class="info">
+                    <h3>Architectural Wonder</h3>
+                    <p>construction, design</p>
+                </div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+
+        <a th:href="@{/images/project-4.jpg}" class="box">
+            <div class="image">
+                <img th:src="@{/images/project-4.jpg}" alt="">
+            </div>
+            <div class="content">
+                <div class="info">
+                    <h3>Rising to new Heights</h3>
+                    <p>construction, design</p>
+                </div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+
+        <a th:href="@{/images/project-5.jpg}" class="box">
+            <div class="image">
+                <img th:src="@{/images/project-5.jpg}" alt="">
+            </div>
+            <div class="content">
+                <div class="info">
+                    <h3>Building the Future</h3>
+                    <p>construction, design</p>
+                </div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+
+        <a th:href="@{/images/project-6.jpg}" class="box">
+            <div class="image">
+                <img th:src="@{/images/project-6.jpg}" alt="">
+            </div>
+            <div class="content">
+                <div class="info">
+                    <h3>Crafting with Care</h3>
+                    <p>construction, design</p>
+                </div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+
+    </div>
+
+    <script>
+
+lightGallery(document.querySelector('.projects .box-container'));
+
+</script>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="login/base::layout(~{::section})"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order</title>
+  </head>
+  <body>
+    <section style="margin: 0; padding: 4rem; background-color: #eee">
+      <style>
+        input,
+        textarea,
+        label {
+          font-size: 14pt;
+        }
+      </style>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h3 class="my-2">CHECKOUT.</h3>
+            <hr class="mb-4" />
+
+            <!-- od_a= order detail address -->
+
+            <div class="form-group">
+              <label for="exampleInputName">Full Name</label>
+              <input
+                style="font-size: 1.5rem"
+                type="text"
+                class="form-control py-3 od_a"
+                id="exampleInputName"
+                name="name"
+                aria-describedby="nameHelp"
+                th:value="${loggedIn_user.name}"
+                placeholder="Enter full name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input
+                style="font-size: 1.5rem"
+                type="email"
+                class="form-control py-3 od_a"
+                id="exampleInputEmail1"
+                name="email"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+                th:value="${loggedIn_user.email}"
+                required
+              />
+              <small id="emailHelp" class="form-text text-muted"
+                >We'll never share your email with anyone else.</small
+              >
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <input
+                  style="font-size: 1.5rem"
+                  type="text"
+                  class="form-control py-3 od_a"
+                  name="city"
+                  placeholder="Enter your city"
+                  th:value="${loggedIn_user.city}"
+                  required
+                />
+              </div>
+              <div class="col">
+                <input
+                  style="font-size: 1.5rem"
+                  type="text"
+                  class="form-control py-3 od_a"
+                  name="state"
+                  placeholder="Enter your state"
+                  th:value="${loggedIn_user.state}"
+                  required
+                />
+              </div>
+              <div class="col">
+                <input
+                  style="font-size: 1.5rem"
+                  type="text"
+                  class="form-control py-3 od_a"
+                  name="pincode"
+                  placeholder="Enter your pincode"
+                  th:value="${loggedIn_user.pincode}"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group mt-2">
+              <textarea
+                rows="6"
+                class="form-control od_a"
+                placeholder="Enter your local Address"
+                name="localAddress"
+                th:value="${loggedIn_user.localAddress}"
+                required
+              >
+              </textarea>
+            </div>
+            <div class="text-right">
+              <h1>
+                Total :
+                <span id="amt_to_be_paid" th:text="${total_price}"></span> Rs
+              </h1>
+              <button onclick="paymentStart()" class="btn btn-primary">
+                Pay Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+      <script>
+        // create order
+        function paymentStart() {
+          // checking whether address is filled or not
+
+          var inputs = document.getElementsByClassName("od_a");
+          var allInputsFilled = true;
+          var address_detail = "";
+
+          for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value === "") {
+              allInputsFilled = false;
+              break;
+            }
+            address_detail += inputs[i].value + ", ";
+          }
+
+          if (allInputsFilled == false) {
+            swal("Warning", "Please fill the address correctly!", "warning");
+            return;
+          }
+
+          // razor pay function for payment
+
+          let amt = document
+            .getElementById("amt_to_be_paid")
+            .innerText.split(" ")[0];
+          if (amt == "" || amt == null || amt == undefined) {
+            swal("Error", "Amount is required..!", "error");
+            return;
+          }
+
+<!--          console.log("under payment function");-->
+
+          $.ajax({
+            url: "/loggedIn/create_order",
+            data: JSON.stringify({ amount: amt, info: "order_request" }),
+            contentType: "application/json",
+            type: "POST",
+            dataType: "json",
+            success: function (resp) {
+              // console.log(resp);
+
+              if (resp.status == "created") {
+                let options = {
+                  key: "rzp_test_ngFOPthVp93pWx",
+                  amount: resp.amount,
+                  currency: "INR",
+                  name: "WEBUILD",
+                  description: "Order payment",
+                  image:
+                    "https://cdn5.vectorstock.com/i/1000x1000/53/34/real-estate-building-logo-template-vector-21245334.jpg",
+                  order_id: resp.id,
+                  handler: function (respo) {
+                    // console.log(respo.razorpay_payment_id);
+                    // console.log(respo.razorpay_order_id);
+                    // console.log(respo.razorpay_signature);
+                    // console.log("payment successful!");
+                    // console.log("Respo " + respo);
+
+                    add_order_in_db(
+                      respo.razorpay_payment_id,
+                      respo.razorpay_order_id,
+                      address_detail,
+                      resp.amount
+                    );
+
+                    // swal("Good job!", "Order is placed", "success");
+                  },
+                  prefill: {
+                    name: "", //your customer's name
+                    email: "",
+                    contact: "",
+                  },
+                  notes: {
+                    address: "WEBUILD Office Gurgaon",
+                  },
+                  theme: {
+                    color: "#3399cc",
+                  },
+                };
+
+                // console.log(options);
+
+                var rzp1 = new Razorpay(options);
+                rzp1.on("payment.failed", function (response) {
+                  console.log(response.error.code);
+                  console.log(response.error.description);
+                  console.log(response.error.source);
+                  console.log(response.error.step);
+                  console.log(response.error.reason);
+                  console.log(response.error.metadata.order_id);
+                  console.log(response.error.metadata.payment_id);
+                  alert("Payment failed");
+                });
+
+                // otherwise open
+                rzp1.open();
+                e.preventDefault();
+                console.clear();
+              }
+            },
+            error: function (error) {
+              console.log(error);
+              alert("something went wrong");
+            },
+          });
+        }
+
+        // function to add data of successful orders.
+
+        function add_order_in_db(payment_id, order_id, address_detail, amount) {
+
+          $.ajax({
+            url: "/loggedIn/addOrder",
+            data: JSON.stringify({ paymentId:payment_id, orderId: order_id, orderAddress:address_detail, orderAmount:amount }),
+            contentType: "application/json",
+            type: "POST",
+            dataType: "json",
+            success: function (resp) {
+              console.log(resp);
+              swal("Good job!", "Order is placed", "success");
+            },
+            error: function (params) {
+              swal("Failed!", "If amount is deducted from your bank account, It'll be refunded within 3-4 working days.", "error");
+            }
+        }) ;
+
+      }
+
+
+      </script>
+    </section>
+  </body>
+</html>

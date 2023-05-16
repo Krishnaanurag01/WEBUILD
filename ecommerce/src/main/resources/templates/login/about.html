@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="login/base::layout(~{::section})">
+<head>
+  <meta charset="UTF-8" />
+  <title>Document</title>
+</head>
+<body>
+
+<section class="about" id="about">
+
+  <h1 class="heading"> about us </h1>
+
+  <div class="row">
+
+    <div class="video">
+      <video src="../../static/images/about-vid.mp4" loop muted autoplay></video>
+    </div>
+
+    <div class="content">
+      <h3>We will provide you the best work which you dreamt for!</h3>
+      <p style="text-align: justify; text-justify: inter-word;">Our team of experts is dedicated to helping you bring your ideas to life. Whether you have a rough sketch or a fully fleshed-out concept, we have the tools and the know-how to turn it into a reality. We take pride in our ability to work with a wide range of clients, from individuals to large corporations, and we're committed to delivering results that exceed your expectations.</p>
+      <a th:href="@{/loggedIn/services}" class="btn">read more</a>
+    </div>
+
+  </div>
+
+  <div class="box-container">
+
+    <div class="box">
+      <h3>10+</h3>
+      <p>Years of experience</p>
+    </div>
+
+    <div class="box">
+      <h3>1500+</h3>
+      <p>Project completed</p>
+    </div>
+
+    <div class="box">
+      <h3>790+</h3>
+      <p>Satiesfied clients</p>
+    </div>
+
+    <div class="box">
+      <h3>450+</h3>
+      <p>Active workers</p>
+    </div>
+
+  </div>
+
+</section>
+
+</body>
+</html>
